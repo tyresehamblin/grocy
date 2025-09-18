@@ -1,7 +1,13 @@
 # Use official PHP 8.2 with Apache
 FROM php:8.2-apache
 
-# Install PHP extensions required by Grocy
+# Install system dependencies for SQLite and PHP extensions
+RUN apt-get update && apt-get install -y \
+    libsqlite3-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install required PHP extensions
 RUN docker-php-ext-install pdo pdo_sqlite
 
 # Enable Apache rewrite module (needed for clean URLs)
