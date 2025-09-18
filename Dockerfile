@@ -14,15 +14,32 @@ RUN apt-get update && apt-get install -y \
     libwebp-dev \
     libxpm-dev \
     libicu-dev \
-    && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions (pdo_sqlite, gd, intl)
 RUN docker-php-ext-install pdo pdo_sqlite intl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
-    && docker-php-ext-install gd
+ && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
+ && docker-php-ext-install gd
 
 # Enable Apache rewrite and headers modules
 RUN a2enmod rewrite headers
+
+# Ensure Apache trusts HTTPS from Render/Cloudflare
+RUN printf "ServerName grocy-50m9.onrender.com\n" > /etc/apache2/conf-available/servername.conf \
+ && a2enconf servername \
+ && printf "SetEnvIfNoCase X-Forwarded-Proto \"^https$\" HTTPS=on\n" > /etc/apache2/conf-available/forwarded-https.conf \
+ && a2enconf forwarded-https
+
+# Set DocumentRoot to public/ and allow .htaccess
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+ && printf "\n<Directory /var/www/html/public>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+    DirectoryIndex index.php\n\
+    AcceptPathInfo On\n\
+</Directory>\n" >> /etc/apache2/sites-available/000-default.conf \
+ && echo "DirectoryIndex index.php" >> /etc/apache2/apache2.conf
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -30,28 +47,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy Grocy source code into container
+# Copy Grocy source code
 COPY . /var/www/html/
 
-# Run Composer to install PHP dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Point Apache to serve the public/ folder
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-
-# Add config block for Grocy public folder
-RUN printf "\n<Directory /var/www/html/public>\n\
-    Options Indexes FollowSymLinks\n\
-    AllowOverride All\n\
-    Require all granted\n\
-    DirectoryIndex index.php\n\
-</Directory>\n" >> /etc/apache2/sites-available/000-default.conf
-
-# Make sure DirectoryIndex is globally recognized
-RUN echo "DirectoryIndex index.php" >> /etc/apache2/apache2.conf
-
-# Expose port 80
+# Expose port
 EXPOSE 80
 
-# Start Apache in foreground
+# Start Apache
 CMD ["apache2-foreground"]
