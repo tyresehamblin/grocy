@@ -56,7 +56,7 @@ Setting('ENERGY_UNIT', 'kcal');
 // Example without URL Rewriting support:
 //  Root URL = https://example.com/grocy/public/index.php/
 //  => BASE_PATH = /grocy/public/index.php
-Setting('BASE_PATH', '/index.php');
+Setting('BASE_PATH', '');
 
 // The base URL of your installation,
 // should be just "/" when running directly under the root of a (sub)domain
