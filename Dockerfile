@@ -22,7 +22,7 @@ RUN docker-php-ext-install pdo pdo_sqlite intl \
     && docker-php-ext-install gd
 
 # Enable Apache rewrite module (needed for clean URLs)
-RUN a2enmod rewrite
+#RUN a2enmod rewrite
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -41,7 +41,7 @@ RUN rm -rf /var/www/html/index.html && \
     sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # Adjust Apache config to allow .htaccess overrides
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride All/AllowOverride None/' /etc/apache2/apache2.conf
 
 # Expose port 80
 EXPOSE 80
