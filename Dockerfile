@@ -37,8 +37,10 @@ COPY . /var/www/html/
 RUN composer install --no-dev --optimize-autoloader
 
 # Point Apache to serve the public/ folder
-RUN rm -rf /var/www/html/index.html && \
-    sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# Tell Apache to ignore .htaccess completely
+RUN sed -i 's|AllowOverride All|AllowOverride None|g' /etc/apache2/apache2.conf \
+ && sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+ && printf "\n<Directory /var/www/html/public>\n    AllowOverride None\n    Require all granted\n    DirectoryIndex index.php\n</Directory>\n" >> /etc/apache2/sites-available/000-default.conf
 
 # Adjust Apache config to allow .htaccess overrides
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride All/AllowOverride None/' /etc/apache2/apache2.conf
