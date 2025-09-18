@@ -61,7 +61,7 @@ Setting('BASE_PATH', '');
 // The base URL of your installation,
 // should be just "/" when running directly under the root of a (sub)domain
 // or for example "https://example.com/grocy" when using a subdirectory
-Setting('BASE_URL', '/');
+Setting('BASE_URL', 'https://grocy-50m9.onrender.com');
 
 // The plugin to use for external barcode lookups,
 // must be the filename (folder "/plugins" for built-in plugins or "/data/plugins" for user plugins) without the .php extension,
