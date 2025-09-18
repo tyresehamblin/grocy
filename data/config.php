@@ -56,12 +56,12 @@ Setting('ENERGY_UNIT', 'kcal');
 // Example without URL Rewriting support:
 //  Root URL = https://example.com/grocy/public/index.php/
 //  => BASE_PATH = /grocy/public/index.php
-Setting('BASE_PATH', '');
+Setting('BASE_PATH', '/index.php');
 
 // The base URL of your installation,
 // should be just "/" when running directly under the root of a (sub)domain
 // or for example "https://example.com/grocy" when using a subdirectory
-Setting('BASE_URL', '/');
+Setting('BASE_URL', 'https://grocy-50m9.onrender.com/index.php');
 
 // The plugin to use for external barcode lookups,
 // must be the filename (folder "/plugins" for built-in plugins or "/data/plugins" for user plugins) without the .php extension,
@@ -70,7 +70,7 @@ Setting('BASE_URL', '/');
 Setting('STOCK_BARCODE_LOOKUP_PLUGIN', 'OpenFoodFactsBarcodeLookupPlugin');
 
 // If, however, your webserver does not support URL rewriting, set this to true
-Setting('DISABLE_URL_REWRITING', false);
+Setting('DISABLE_URL_REWRITING', true);
 
 // Specify an custom homepage if desired, by default the homepage will be set to the stock overview page
 // This needs to be one of the following values:
