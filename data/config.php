@@ -56,7 +56,7 @@ Setting('ENERGY_UNIT', 'kcal');
 // Example without URL Rewriting support:
 //  Root URL = https://example.com/grocy/public/index.php/
 //  => BASE_PATH = /grocy/public/index.php
-Setting('BASE_PATH', '/index.php');
+Setting('BASE_PATH', '');
 
 // The base URL of your installation,
 // should be just "/" when running directly under the root of a (sub)domain
@@ -70,7 +70,7 @@ Setting('BASE_URL', '/');
 Setting('STOCK_BARCODE_LOOKUP_PLUGIN', 'OpenFoodFactsBarcodeLookupPlugin');
 
 // If, however, your webserver does not support URL rewriting, set this to true
-Setting('DISABLE_URL_REWRITING', true);
+Setting('DISABLE_URL_REWRITING', false);
 
 // Specify an custom homepage if desired, by default the homepage will be set to the stock overview page
 // This needs to be one of the following values:
