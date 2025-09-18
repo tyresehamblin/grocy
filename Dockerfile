@@ -21,8 +21,8 @@ RUN docker-php-ext-install pdo pdo_sqlite intl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
     && docker-php-ext-install gd
 
-# Enable Apache rewrite module (needed for clean URLs)
-#RUN a2enmod rewrite
+# Enable Apache rewrite and headers modules
+RUN a2enmod rewrite headers
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -37,13 +37,15 @@ COPY . /var/www/html/
 RUN composer install --no-dev --optimize-autoloader
 
 # Point Apache to serve the public/ folder
-# Tell Apache to ignore .htaccess completely
-RUN sed -i 's|AllowOverride All|AllowOverride None|g' /etc/apache2/apache2.conf \
- && sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
- && printf "\n<Directory /var/www/html/public>\n    AllowOverride None\n    Require all granted\n    DirectoryIndex index.php\n</Directory>\n" >> /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Adjust Apache config to allow .htaccess overrides
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride All/AllowOverride None/' /etc/apache2/apache2.conf
+# Add config block for Grocy public folder
+RUN printf "\n<Directory /var/www/html/public>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+    DirectoryIndex index.php\n\
+</Directory>\n" >> /etc/apache2/sites-available/000-default.conf
 
 # Expose port 80
 EXPOSE 80
