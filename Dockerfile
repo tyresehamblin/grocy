@@ -53,6 +53,9 @@ COPY . /var/www/html/
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# --- Force HTTPS bootstrap patch ---
+RUN sed -i '1i <?php if(isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"]==="https"){$_SERVER["HTTPS"]="on";$_SERVER["SERVER_PORT"]=443;} ?>' /var/www/html/public/index.php
+
 # Expose port
 EXPOSE 80
 
