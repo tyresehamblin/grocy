@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: grocy
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+    disk:
+      name: grocy-data
+      mountPath: /var/data
+      sizeGB: 1
