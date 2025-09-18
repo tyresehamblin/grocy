@@ -6,8 +6,8 @@ Setting('ENERGY_UNIT', 'kcal');
 
 // Render runs Grocy at the domain root with rewrites enabled
 Setting('DISABLE_URL_REWRITING', false);
-Setting('BASE_URL', '/public');
-Setting('BASE_PATH', '/public');
+Setting('BASE_URL', '/');
+Setting('BASE_PATH', '');
 
 // Database (SQLite)
 return [
