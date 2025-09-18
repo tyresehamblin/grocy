@@ -47,6 +47,9 @@ RUN printf "\n<Directory /var/www/html/public>\n\
     DirectoryIndex index.php\n\
 </Directory>\n" >> /etc/apache2/sites-available/000-default.conf
 
+# Make sure DirectoryIndex is globally recognized
+RUN echo "DirectoryIndex index.php" >> /etc/apache2/apache2.conf
+
 # Expose port 80
 EXPOSE 80
 
